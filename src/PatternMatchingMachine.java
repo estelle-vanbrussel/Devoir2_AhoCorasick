@@ -17,21 +17,16 @@ public class PatternMatchingMachine {
 
     }
 
-    private boolean isInDuplicateTable(char[] duplicateTable, char character) {
+    private boolean isInDuplicateTable(String[] duplicateTable, String string) {
         // on vérifie qu'on n'a pas déjà trouvé le caractère dans la colonne
         // ou son équivalent minuscule ou majuscule
-        for (char tableCharacter : duplicateTable) {
-            if (tableCharacter == character ||
-                    (character-32 == tableCharacter || character+32 == tableCharacter)) {
+        for (String tableString : duplicateTable) {
+            if (string.equalsIgnoreCase(tableString) /*||
+                    (string-32 == tableCharacter || string+32 == tableCharacter)*/) {
                 return true;
             }
         }
         return false;
-    }
-
-    private char toUpper(char character) {
-        int return_value = character-32;
-        return (char)return_value;
     }
 
     public void buildTable() {
@@ -41,18 +36,24 @@ public class PatternMatchingMachine {
         int i=0;
         int statesCount=0;
         int oldStatesCount;
-        char[] duplicateTable;
+        String[] duplicateTable = new String[keywords.length];
 
         do {
             oldStatesCount=statesCount;
-            //On réinitialise la table des doublons à chaque itération
-            duplicateTable = new char[keywords.length];
             for (int j = 0; j < keywords.length ; ++j) {
                 // i = colonne, j = ligne
-                if(i<keywords[j].length() && !isInDuplicateTable(duplicateTable, keywords[j].charAt(i))){
-                    duplicateTable[j] = keywords[j].charAt(i);
+                if (i < keywords[j].length() && !isInDuplicateTable(duplicateTable, keywords[j].substring(0,i+1))){
                     statesCount++;
                 }
+                if (i < keywords[j].length()) {
+                    duplicateTable[j] = keywords[j].substring(0,i+1);
+                }
+            }
+            System.out.println("nb colonnes : " + statesCount);
+            System.out.println("colonne : " + i);
+            for (String string : duplicateTable) {
+
+                System.out.println(string);
             }
             i++;
         } while(oldStatesCount<statesCount);

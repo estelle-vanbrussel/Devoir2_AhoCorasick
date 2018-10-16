@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String [] args) {
-        String[] keywords = {"ART","Carte","CLE","C'eSt","TABLE!"};
+        String[] keywords = {"ART","CARTE","CLE","COUP","TABLE"};
         PatternMatchingMachine pmm = new PatternMatchingMachine(keywords);
         for (int i = 0; i < pmm.globalTable.length ; ++i) {
             String ligne = "";
@@ -10,7 +10,9 @@ public class Main {
             }
             //System.out.println((char)i + " -> " + ligne);
         }
-        System.out.println(pmm);
-        System.out.println(pmm.globalTable[0].length);
+        String str = new String("hello");
+        System.out.println(str.substring(0,1));
+        //System.out.println(pmm);
+        //System.out.println(pmm.globalTable[0].length);
     }
 }
