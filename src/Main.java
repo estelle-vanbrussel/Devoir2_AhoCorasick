@@ -10,8 +10,6 @@ public class Main {
             }
             //System.out.println((char)i + " -> " + ligne);
         }
-        String str = new String("hello");
-        System.out.println(str.substring(0,1));
         //System.out.println(pmm);
         //System.out.println(pmm.globalTable[0].length);
     }

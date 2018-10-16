@@ -24,7 +24,8 @@ public class Interface extends Application {
         Scene scene = new Scene(root, 800, 800);
         primaryStage.setScene(scene);
 
-        String[] keywords = {"ART","Carte","CLE","C'eSt","TABLE!"};
+        //String[] keywords = {"ART","Carte","CLE","C'eSt","TABLE!"};
+        String[] keywords = {"ART","CARTE","CLE","COUP","TABLE"};
         PatternMatchingMachine pmm = new PatternMatchingMachine(keywords);
 
         HBox canvas = new HBox();
@@ -35,10 +36,10 @@ public class Interface extends Application {
         root.add(canvas, 0,0);
 
         //première ligne -> numéro des états
-        for (int i = 0 ; i <= pmm.globalTable[0].length ; ++i) {
+        for (int i = 0 ; i < pmm.globalTable[0].length ; ++i) {
             HBox hbox = new HBox();
             hbox.setPrefSize(scene.getWidth() / pmm.globalTable[0].length, scene.getHeight() / pmm.globalTable.length);
-            Label stateNumber = new Label(String.valueOf(i+1));
+            Label stateNumber = new Label(String.valueOf(i));
             hbox.getChildren().add(stateNumber);
             root.add(hbox,i+1,0);
         }
