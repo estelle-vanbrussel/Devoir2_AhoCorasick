@@ -66,6 +66,13 @@ public class PatternMatchingMachine {
         //soit du caractère d'avant du mot en cours,
         //soit ??
         //peut-être changer totalement la structure de cette boucle
+
+        //Algo original :
+        //g(state, aj) ---> globalTable[aj][state]
+        //fail ---> il n'y a pas aj dans la colonne state
+        //procedure enter :
+        //1e boucle : on va jusqu'à un état qui n'a pas le successeur voulu
+        //2e boucle : à partir de cet état, on créé les nouveaux états
         i=0;
         statesCount=0;
         do {
