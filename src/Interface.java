@@ -25,7 +25,8 @@ public class Interface extends Application {
         primaryStage.setScene(scene);
 
         //String[] keywords = {"ART","Carte","CLE","C'eSt","TABLE!"};
-        String[] keywords = {"ART","CARTE","CLE","COUP","TABLE"};
+        String[] keywords = {"he", "his", "she", "hers"};
+        //String[] keywords = {"ART","CARTE","CLE","COUP","TABLE"};
         PatternMatchingMachine pmm = new PatternMatchingMachine(keywords);
 
         HBox canvas = new HBox();
@@ -77,6 +78,13 @@ public class Interface extends Application {
             }
             //System.out.println((char)i + " -> " + ligne);
         }
+
+        indexHboxLigne += 2;
+
+        for (int i = 0; i < pmm.failTable.length ; ++i) {
+
+        }
+        System.out.println(indexHboxLigne);
         primaryStage.show();
     }
 }

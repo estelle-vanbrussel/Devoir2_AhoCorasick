@@ -1,10 +1,14 @@
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class PatternMatchingMachine {
 
     public String[] keywords;
     public int[][] globalTable;
+    public String[] outputTable;
+    public int[] failTable;
 
     public PatternMatchingMachine(String[] keywords) {
         //trier les mots clés
@@ -46,12 +50,6 @@ public class PatternMatchingMachine {
                     duplicateTable[j] = keywords[j].substring(0,i+1);
                 }
             }
-            System.out.println("nb colonnes : " + statesCount);
-            System.out.println("colonne : " + i);
-            for (String string : duplicateTable) {
-
-                System.out.println(string);
-            }
             i++;
         } while(oldStatesCount<statesCount);
         return statesCount;
@@ -61,10 +59,10 @@ public class PatternMatchingMachine {
         //créer une table de commandes sous la forme d'une matrice avec en lignes
         //les indices vers les caractères ASCII et en colonne les états.
 
-        //TODO : que fait-on concernant la casse ?
-
         int statesCount = nbMatrixColumns();
         globalTable = new int[128][statesCount];
+        outputTable = new String[statesCount];
+        failTable = new int[statesCount];
 
         int newState = 0;
         for (String keyword : keywords) {
@@ -83,7 +81,7 @@ public class PatternMatchingMachine {
     public int enter(String keyword, int newState) {
         int state = 0;
         int j = 0;
-
+        keyword = keyword.toUpperCase();
         //On se positionne à l'état qui n'a pas le successeur voulu.
         while(j < keyword.length() && jumpTo(state, keyword.charAt(j)) != -1) {
             state = jumpTo(state, keyword.charAt(j));
@@ -93,15 +91,45 @@ public class PatternMatchingMachine {
         //On créé tous les successeurs consécutivement de l'état trouvé précédemment.
         for (int p = j; p < keyword.length() ; ++p) {
             ++newState;
+            if(keyword.charAt(p)<91 && keyword.charAt(p)>64){
+                globalTable[keyword.charAt(p)+32][state] = newState;
+            }
+
             globalTable[keyword.charAt(p)][state] = newState;
             state = newState;
         }
 
-        //TODO : renseigner un tableau output qui associe state à keyword
+        outputTable[state] = keyword;
         return newState;
     }
 
     public void buildFailTable() {
+        Queue<Integer> queue = new PriorityQueue<>();
+        for (int i=0; i<globalTable.length;i++){
+            if(globalTable[i][0] != 0 ){
+                queue.add(globalTable[i][0]);
+                failTable[globalTable[i][0]]=0;
+            }
+        }
+        while(!queue.isEmpty()){
+            int r = queue.poll();
+            for(int i=0; i<globalTable.length;i++){
+                if(globalTable[i][r]!=0){
+                    queue.add(globalTable[i][r]);
+                    int state = failTable[r];
+                    while(globalTable[i][state]==0){
+                        state=failTable[state];
+                        if (state == 0) break;
+                    }
+                    failTable[globalTable[i][r]]=globalTable[i][state];
+                    outputTable[globalTable[i][r]]+="," +outputTable[failTable[globalTable[i][r]]];
+                }
+            }
+        }
+
+        for(int i = 0; i < failTable.length ; ++i) {
+            System.out.println(i + " : " + failTable[i]);
+        }
 
     }
 
