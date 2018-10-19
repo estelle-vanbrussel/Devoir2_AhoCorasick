@@ -1,13 +1,11 @@
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class PatternMatchingMachine {
 
     public String[] keywords;
     public int[][] globalTable;
-    public String[] outputTable;
+    public ArrayList<ArrayList<String>> outputTable;
     public int[] failTable;
 
     public PatternMatchingMachine(String[] keywords) {
@@ -61,7 +59,10 @@ public class PatternMatchingMachine {
 
         int statesCount = nbMatrixColumns();
         globalTable = new int[128][statesCount];
-        outputTable = new String[statesCount];
+        outputTable = new ArrayList<ArrayList<String>>(statesCount);
+        for (int i = 0; i < statesCount ; ++i) {
+            outputTable.add(new ArrayList<>());
+        }
         failTable = new int[statesCount];
 
         int newState = 0;
@@ -99,8 +100,17 @@ public class PatternMatchingMachine {
             state = newState;
         }
 
-        outputTable[state] = keyword;
+        outputTable.get(state).add(keyword);
         return newState;
+    }
+
+    public ArrayList<String> union(ArrayList<String> list1, ArrayList<String> list2) {
+        Set<String> set = new HashSet<String>();
+
+        set.addAll(list1);
+        set.addAll(list2);
+
+        return new ArrayList<String>(set);
     }
 
     public void buildFailTable() {
@@ -122,15 +132,14 @@ public class PatternMatchingMachine {
                         if (state == 0) break;
                     }
                     failTable[globalTable[i][r]]=globalTable[i][state];
-                    outputTable[globalTable[i][r]]+="," +outputTable[failTable[globalTable[i][r]]];
+                    if (outputTable.get(failTable[globalTable[i][r]]) != null) {
+                        outputTable.set(globalTable[i][r], union(outputTable.get(globalTable[i][r]), outputTable.get(failTable[globalTable[i][r]])));
+                    }
+
                 }
             }
         }
-
-        for(int i = 0; i < failTable.length ; ++i) {
-            System.out.println(i + " : " + failTable[i]);
-        }
-
+        System.out.println(outputTable);
     }
 
     public String toString() {

@@ -9,6 +9,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class Interface extends Application {
 
     public static void main(String[] args) {
@@ -25,7 +27,7 @@ public class Interface extends Application {
         primaryStage.setScene(scene);
 
         //String[] keywords = {"ART","Carte","CLE","C'eSt","TABLE!"};
-        String[] keywords = {"he", "his", "she", "hers"};
+        String[] keywords = {"he", "she", "his", "hers", "ers", "rs"};
         //String[] keywords = {"ART","CARTE","CLE","COUP","TABLE"};
         PatternMatchingMachine pmm = new PatternMatchingMachine(keywords);
 
@@ -79,12 +81,63 @@ public class Interface extends Application {
             //System.out.println((char)i + " -> " + ligne);
         }
 
-        indexHboxLigne += 2;
+        indexHboxLigne += 3;
 
-        for (int i = 0; i < pmm.failTable.length ; ++i) {
+        HBox hboxStateLabel = new HBox();
+        hboxStateLabel.setPrefSize(scene.getWidth() / pmm.globalTable[0].length, scene.getHeight() / pmm.globalTable.length);
+        Label labelState = new Label("state");
+        hboxStateLabel.getChildren().add(labelState);
+        root.add(hboxStateLabel, 0, indexHboxLigne);
 
+        HBox hboxFailStateLabel = new HBox();
+        hboxFailStateLabel.setPrefSize(scene.getWidth() / pmm.globalTable[0].length, scene.getHeight() / pmm.globalTable.length);
+        Label labelFailState = new Label("fail(state)");
+        hboxFailStateLabel.getChildren().add(labelFailState);
+        root.add(hboxFailStateLabel, 0, indexHboxLigne+1);
+
+        for (int i = 1; i < pmm.failTable.length ; ++i) {
+            HBox hBoxStateNumber = new HBox(new Label(String.valueOf(i)));
+            hBoxStateNumber.setPrefSize(scene.getWidth() / pmm.globalTable[0].length, scene.getHeight() / pmm.globalTable.length);
+            root.add(hBoxStateNumber, i, indexHboxLigne);
+
+            HBox hboxFailStateNumber = new HBox(new Label(String.valueOf(pmm.failTable[i])));
+            hboxFailStateNumber.setPrefSize(scene.getWidth() / pmm.globalTable[0].length, scene.getHeight() / pmm.globalTable.length);
+            root.add(hboxFailStateNumber, i, indexHboxLigne+1);
         }
-        System.out.println(indexHboxLigne);
+
+
+        indexHboxLigne += 6;
+
+        HBox hboxStateLabelBis = new HBox();
+        hboxStateLabelBis.setPrefSize(scene.getWidth()*3 / (pmm.globalTable[0].length + 10), scene.getHeight() / (pmm.globalTable.length + 10));
+        Label labelStateBis = new Label("state");
+        hboxStateLabelBis.getChildren().add(labelStateBis);
+        root.add(hboxStateLabelBis, 0, indexHboxLigne);
+
+        HBox hboxOutputStateLabel = new HBox();
+        hboxOutputStateLabel.setPrefSize(scene.getWidth()*3 / (pmm.globalTable[0].length + 10), scene.getHeight() / (pmm.globalTable.length + 10));
+        Label labelOutputState = new Label("output(state)");
+        hboxOutputStateLabel.getChildren().add(labelOutputState);
+        root.add(hboxOutputStateLabel, 0, indexHboxLigne+1);
+
+        for (int i = 0; i < pmm.outputTable.size() ; ++i) {
+            if (pmm.outputTable.get(i).isEmpty()) {
+                continue;
+            }
+
+            HBox hBoxStateNumber = new HBox(new Label(String.valueOf(i)));
+            hBoxStateNumber.setPrefSize(scene.getWidth() / (pmm.globalTable[0].length + 10), scene.getHeight() / (pmm.globalTable.length + 10));
+            root.add(hBoxStateNumber, i, indexHboxLigne);
+
+            int indexStringLigne = indexHboxLigne + 1;
+            for (String outputString : pmm.outputTable.get(i)) {
+                HBox hboxOutputStrings = new HBox();
+                hboxOutputStrings.setPrefHeight((scene.getHeight() / pmm.globalTable.length)*3);
+                Label labelOutputStrings = new Label(outputString);
+                hboxOutputStrings.getChildren().add(labelOutputStrings);
+                root.add(hboxOutputStrings, i, indexStringLigne++);
+            }
+        }
         primaryStage.show();
     }
 }
