@@ -5,11 +5,20 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Interface extends Application {
 
@@ -18,7 +27,7 @@ public class Interface extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
         GridPane root = new GridPane();
         root.setPadding(new Insets(10,10,10,10));
         root.setHgap(10);
@@ -27,7 +36,7 @@ public class Interface extends Application {
         primaryStage.setScene(scene);
 
         //String[] keywords = {"ART","Carte","CLE","C'eSt","TABLE!"};
-        String[] keywords = {"he", "she", "his", "hers", "ers", "rs"};
+        String[] keywords = {"he", "she", "his", "hers","ers","rs"};
         //String[] keywords = {"ART","CARTE","CLE","COUP","TABLE"};
         PatternMatchingMachine pmm = new PatternMatchingMachine(keywords);
 
@@ -138,6 +147,49 @@ public class Interface extends Application {
                 root.add(hboxOutputStrings, i, indexStringLigne++);
             }
         }
+
+        Map<Integer, Integer> tableResult = pmm.findPatterns("She is his sister. He is her brother. Hers");
+        System.out.println(tableResult);
+
+        indexHboxLigne += 6;
+
+        root.add(new Label("debut"), 0, indexHboxLigne);
+        root.add(new Label("fin"), 1, indexHboxLigne);
+        ++indexHboxLigne;
+        for (Map.Entry<Integer, Integer> end : tableResult.entrySet()) {
+            HBox hboxBegin= new HBox(new Label(String.valueOf(end.getKey())));
+            HBox hboxEnd = new HBox(new Label(String.valueOf(end.getValue())));
+            root.add(hboxBegin, 0, indexHboxLigne);
+            root.add(hboxEnd, 1, indexHboxLigne);
+            ++indexHboxLigne;
+        }
+
+        TextArea areaString = new TextArea();
+        String text = "She is his sister. He is her brother. Hers";
+
+        Set<Integer> tableResultKeys = tableResult.keySet();
+
+        StringBuilder sb = new StringBuilder("");
+        for (int i = 0; i < text.length(); i++) {
+            if (tableResultKeys.contains(i)) {
+                sb.append("<strong>");
+                sb.append(text.charAt(i));
+            }
+            else if (tableResult.containsValue(i)) {
+                sb.append(text.charAt(i));
+                sb.append("</strong>");
+            }
+            else {
+                sb.append(text.charAt(i));
+            }
+        }
+        String fontText = sb.toString();
+        WebView fontWebView = new WebView();
+        fontWebView.getEngine().loadContent(fontText);
+        ++indexHboxLigne;
+        ++indexHboxLigne;
+        root.add(fontWebView,0,indexHboxLigne);
+
         primaryStage.show();
     }
 }

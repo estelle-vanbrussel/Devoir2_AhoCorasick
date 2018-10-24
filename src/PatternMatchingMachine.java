@@ -1,4 +1,6 @@
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 public class PatternMatchingMachine {
@@ -15,8 +17,25 @@ public class PatternMatchingMachine {
         buildFailTable();
     }
 
-    public void findPatterns(FileInputStream file) {
-
+    public Map<Integer, Integer> findPatterns(String fileString) throws FileNotFoundException {
+        //String fileString = file.toString();
+        int state=0;
+        Map<Integer,Integer> result = new TreeMap<Integer, Integer>();
+        for(int i=0;i<fileString.length();i++){
+            while(globalTable[fileString.charAt(i)][state]==0){
+                state=failTable[state];
+                if (state == 0) break;
+            }
+            state=globalTable[fileString.charAt(i)][state];
+            if(!outputTable.get(state).isEmpty()){
+                int max=0;
+                for (String output:outputTable.get(state)) {
+                    max=Math.max(max,output.length());
+                }
+                result.put(i-max+1,i);
+            }
+        }
+        return result;
     }
 
     private boolean isInDuplicateTable(String[] duplicateTable, String string) {
