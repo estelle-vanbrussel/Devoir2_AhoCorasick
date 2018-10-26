@@ -5,14 +5,22 @@ import java.util.*;
 
 public class PatternMatchingMachine {
 
-    public String[] keywords;
+    public ArrayList<String> keywords;
     public int[][] globalTable;
     public ArrayList<ArrayList<String>> outputTable;
     public int[] failTable;
 
-    public PatternMatchingMachine(String[] keywords) {
+    public PatternMatchingMachine(ArrayList<String> keywords) {
         //trier les mots clés
         this.keywords = keywords;
+        buildTable();
+        buildFailTable();
+    }
+    public PatternMatchingMachine(String[] keywords) {
+        //trier les mots clés
+        for (String keyword : keywords) {
+            this.keywords.add(keyword);
+        }
         buildTable();
         buildFailTable();
     }
@@ -54,17 +62,17 @@ public class PatternMatchingMachine {
         int i=0;
         int statesCount=1;
         int oldStatesCount;
-        String[] duplicateTable = new String[keywords.length];
+        String[] duplicateTable = new String[keywords.size()];
 
         do {
             oldStatesCount=statesCount;
-            for (int j = 0; j < keywords.length ; ++j) {
+            for (int j = 0; j < keywords.size() ; ++j) {
                 // i = colonne, j = ligne
-                if (i < keywords[j].length() && !isInDuplicateTable(duplicateTable, keywords[j].substring(0,i+1))){
+                if (i < keywords.get(j).length() && !isInDuplicateTable(duplicateTable, keywords.get(j).substring(0,i+1))){
                     statesCount++;
                 }
-                if (i < keywords[j].length()) {
-                    duplicateTable[j] = keywords[j].substring(0,i+1);
+                if (i < keywords.get(j).length()) {
+                    duplicateTable[j] = keywords.get(j).substring(0,i+1);
                 }
             }
             i++;
