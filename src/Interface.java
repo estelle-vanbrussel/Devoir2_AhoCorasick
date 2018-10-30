@@ -11,10 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -148,7 +145,26 @@ public class Interface extends Application {
             }
         }
 
-        Map<Integer, Integer> tableResult = pmm.findPatterns("She is his sister. He is her brother. Hers");
+        FileReader fileReader = new FileReader("test.txt");
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        String fileString ="";
+        String line = null;
+        try {
+            line = bufferedReader.readLine();
+            while (line != null)
+            {
+                fileString += line;
+                line = bufferedReader.readLine();
+            }
+
+            bufferedReader.close();
+            fileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        Map<Integer, Integer> tableResult = pmm.findPatterns(fileString);
         System.out.println(tableResult);
 
         indexHboxLigne += 6;
@@ -165,7 +181,9 @@ public class Interface extends Application {
         }
 
         TextArea areaString = new TextArea();
-        String text = "She is his sister. He is her brother. Hers";
+        String text = fileString;
+
+
 
         Set<Integer> tableResultKeys = tableResult.keySet();
 

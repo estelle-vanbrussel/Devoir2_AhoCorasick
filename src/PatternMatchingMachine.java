@@ -5,7 +5,7 @@ import java.util.*;
 
 public class PatternMatchingMachine {
 
-    public ArrayList<String> keywords;
+    public ArrayList<String> keywords= new ArrayList<>();
     public int[][] globalTable;
     public ArrayList<ArrayList<String>> outputTable;
     public int[] failTable;
