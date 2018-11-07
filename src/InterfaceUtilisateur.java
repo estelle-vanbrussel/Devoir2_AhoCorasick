@@ -57,7 +57,10 @@ public class InterfaceUtilisateur extends Application
         TextField fileValue = new TextField();
         canvas.add(fileValue,1,3);
         Button search = new Button("Chercher");
+        Label nbResults = new Label();
+        root.add(nbResults,1,0);
         search.setOnAction((EventHandler<ActionEvent>) e -> {
+            nbResults.setText("");
             errorLabel.setText("");
             if(!hbox2.getChildren().isEmpty())
                 hbox2.getChildren().remove(0);
@@ -71,7 +74,8 @@ public class InterfaceUtilisateur extends Application
                     line = bufferedReader.readLine();
                     while (line != null)
                     {
-                        fileString.append(line +"\n");
+                        fileString.append(line);
+                        fileString.append("<br>");
                         line = bufferedReader.readLine();
                     }
 
@@ -83,19 +87,16 @@ public class InterfaceUtilisateur extends Application
                 Map<Integer,Integer> result = pmm.findPatterns(fileString.toString());
 
                 Set<Integer> tableResultKeys = result.keySet();
+                nbResults.setText(tableResultKeys.size()+"");
 
                 StringBuilder sb = new StringBuilder("");
                 for (int i = 0; i < fileString.length(); i++) {
                     if (tableResultKeys.contains(i)) {
                         sb.append("<strong>");
-                        sb.append(fileString.charAt(i));
                     }
-                    else if (result.containsValue(i)) {
-                        sb.append(fileString.charAt(i));
+                    sb.append(fileString.charAt(i));
+                    if (result.containsValue(i)) {
                         sb.append("</strong>");
-                    }
-                    else {
-                        sb.append(fileString.charAt(i));
                     }
                 }
                 String fontText = sb.toString();
